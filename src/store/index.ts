@@ -1,30 +1,23 @@
 import { createStore } from 'vuex';
 import axios from "../services/axios.service";
 
-const getBotResponse = async (message, currentStep) => {
-  const response = await axios.post("/api/chats/create-applicant", {
-    message,
-    currentStep
-  });
-  return response.data.bot_response;
-};
-
 export default createStore({
   state: {
     conversation: [
-      { id: 1, text: 'Welcome! How can I help you today?', sender: 'bot' }
+      { id: 1, text: "Welcome! I'm your application bot and I'll ask some details about you.", sender: 'bot' },
+      { id: 2, text: "What is your first name?", sender: 'bot' },
     ],
     applicantForm: {
       firstName: '',
       lastName: '',
-      dob: '',
+      dateOfBirth: '',
       email: '',
-      phoneNumber: '',
+      phone: '',
       address: '',
       city: '',
       province: '',
       postalCode: '',
-      eTransferSameAsEmail: null
+      emailAsTransfer: null
     },
     currentStep: 0, // To track which field the bot is currently prompting for
     botResponses: {
@@ -33,12 +26,12 @@ export default createStore({
         invalid: "Please provide a valid first name."
       },
       1: {
-        valid: "Thanks! What's your date of birth? (dd/mm/yyyy)",
+        valid: "Thanks! What's your date of birth? (YYYY-MM-DD)",
         invalid: "Please provide a valid last name."
       },
       2: {
         valid: "Got it! Now, could you share your email address?",
-        invalid: "The date of birth must be in the format dd/mm/yyyy."
+        invalid: "The date of birth must be in the format YYYY-MM-DD."
       },
       3: {
         valid: "Perfect! What is your phone number? (e.g., (000) 000 - 000)",
@@ -65,8 +58,11 @@ export default createStore({
         invalid: "Please enter a valid postal code (e.g., A1A1A1)."
       },
       9: {
-        valid: "Thank you for completing the form!",
+        valid: "Do you agree with the terms and conditions?",
         invalid: "Please answer 'Yes' or 'No'."
+      },
+      10: {
+        valid: "Thank you for completing the form!",
       }
     }
   },
@@ -75,6 +71,12 @@ export default createStore({
       state.conversation.push(message);
     },
     UPDATE_FORM_FIELD(state, { field, value }) {
+      if (value == 'yes') {
+        state.applicantForm[field] = true;
+      }
+      if (value == 'no') {
+        state.applicantForm[field] = false;
+      }
       state.applicantForm[field] = value;
     },
     INCREMENT_STEP(state) {
@@ -83,6 +85,9 @@ export default createStore({
   },
   actions: {
     async sendMessage({ state, commit, dispatch }, message) {
+      // Add user's message to conversation
+      commit('ADD_MESSAGE', { id: Date.now(), text: message, sender: 'user' });
+  
       // Validate the message based on the current step
       const validationResult = await dispatch('validateInput', { step: state.currentStep, message });
       
@@ -90,20 +95,23 @@ export default createStore({
         // If validation fails, get the invalid response
         const botResponse = state.botResponses[state.currentStep].invalid;
         commit('ADD_MESSAGE', { id: Date.now(), text: botResponse, sender: 'bot' });
-        commit('KEEP_STEP'); // Stay on the same step
+        // The current step remains the same
       } else {
-        // If validation succeeds, update the form, send user message, and move to the next step
+        // If validation succeeds, update the form field
         commit('UPDATE_FORM_FIELD', { field: validationResult.field, value: message });
-        commit('ADD_MESSAGE', { id: Date.now(), text: message, sender: 'user' });
-
+  
+        // Get the bot's valid response for the next step
         const botResponse = state.botResponses[state.currentStep].valid;
         commit('ADD_MESSAGE', { id: Date.now(), text: botResponse, sender: 'bot' });
-
-        commit('INCREMENT_STEP'); // Move to the next step
+  
+        // Move to the next step
+        commit('INCREMENT_STEP');
       }
-      
-      if (state.currentStep == 9) {
-        await submitForm(state);
+
+      // When the form reaches the last step, submit the form
+      if (state.currentStep === 10) {
+        console.log(state.applicantForm)
+        await axios.post("/api/chats/create-applicant", state.applicantForm);
       }
     },
 
@@ -128,7 +136,9 @@ export default createStore({
         case 8:
           return validatePostalCode(message);
         case 9:
-          return validateYesNo(message);
+          return validateYesNo(message, 'emailAsETransfer');
+        case 10:
+          return validateYesNo(message, 'termsAndConditions');
         default:
           return { valid: true };
       }
@@ -140,11 +150,6 @@ export default createStore({
   }
 });
 
-const submitForm = async ({ state }) => {
-  const formData = state.applicantForm;
-  await axios.post("/api/chats/submit-form", formData);
-};
-
 const validateName = (input, field) => {
   if (!input.trim()) {
     return { valid: false, error: `Please provide a valid ${field}.`, field };
@@ -153,11 +158,11 @@ const validateName = (input, field) => {
 };
 
 const validateDateOfBirth = (input) => {
-  const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
   if (!regex.test(input)) {
-    return { valid: false, error: 'Please enter a valid date of birth (dd/mm/yyyy).', field: 'dob' };
+    return { valid: false, error: 'Please enter a valid date of birth (yyyy-mm-dd).', field: 'dateOfBirth' };
   }
-  return { valid: true, field: 'dob' };
+  return { valid: true, field: 'dateOfBirth' };
 };
 
 const validateEmail = (input) => {
@@ -171,9 +176,9 @@ const validateEmail = (input) => {
 const validatePhoneNumber = (input) => {
   const regex = /^\(\d{3}\) \d{3} - \d{3}$/;
   if (!regex.test(input)) {
-    return { valid: false, error: 'Please enter a valid phone number (e.g., (000) 000 - 000).', field: 'phoneNumber' };
+    return { valid: false, error: 'Please enter a valid phone number (e.g., (000) 000 - 000).', field: 'phone' };
   }
-  return { valid: true, field: 'phoneNumber' };
+  return { valid: true, field: 'phone' };
 };
 
 const validateTextField = (input, field) => {
@@ -191,10 +196,10 @@ const validatePostalCode = (input) => {
   return { valid: true, field: 'postalCode' };
 };
 
-const validateYesNo = (input) => {
+const validateYesNo = (input, field) => {
   const normalizedInput = input.trim().toLowerCase();
   if (normalizedInput === 'yes' || normalizedInput === 'no') {
-    return { valid: true, field: 'eTransferSameAsEmail', value: normalizedInput === 'yes' };
+    return { valid: true, field: field, value: normalizedInput === 'yes' ? true : false };
   }
-  return { valid: false, error: 'Please answer "Yes" or "No".', field: 'eTransferSameAsEmail' };
+  return { valid: false, error: 'Please answer "Yes" or "No".', field: 'emailAsTransfer' };
 };
