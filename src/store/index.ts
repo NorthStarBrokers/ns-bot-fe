@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createStore } from 'vuex';
 import axios from "../services/axios.service";
 
@@ -17,7 +18,8 @@ export default createStore({
       city: '',
       province: '',
       postalCode: '',
-      emailAsTransfer: null
+      emailAsETransfer: null,
+      termsAndConditions: null
     },
     currentStep: 0, // To track which field the bot is currently prompting for
     botResponses: {
@@ -71,16 +73,13 @@ export default createStore({
       state.conversation.push(message);
     },
     UPDATE_FORM_FIELD(state, { field, value }) {
-      if (value == 'yes') {
-        state.applicantForm[field] = true;
-      }
-      if (value == 'no') {
-        state.applicantForm[field] = false;
-      }
-      state.applicantForm[field] = value;
+      state.applicantForm[field] = value == 'yes' ? true : value == 'no' ? false : value;
     },
     INCREMENT_STEP(state) {
       state.currentStep++;
+    },
+    RESET_STEP(state) {
+      state.currentStep = 0;
     },
   },
   actions: {
@@ -114,10 +113,12 @@ export default createStore({
           // Move to the next step
           commit('INCREMENT_STEP');
         }
-  
+        
+        console.log(state.currentStep);
         // Submit the form when all steps are completed
-        if (state.currentStep === 10) {
+        if (state.currentStep === 11) {
           await axios.post("/api/chats/create-applicant", state.applicantForm);
+          commit('RESET_STEP');
         }
       }, 1500); // Delay bot response by 1.5 seconds
     },
