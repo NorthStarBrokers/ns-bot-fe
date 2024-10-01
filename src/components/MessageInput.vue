@@ -2,13 +2,19 @@
     <form id="message-form" @submit.prevent="send">
       <div class="input-group send-message-group">
         <input
+          type="text"
           v-model="newMessage"
           ref="newMessageInput"
-          type="text"
-          class="input-message"
           placeholder="Write a message..."
+          class="input-message"
+          :class="{ 'input-disabled': isBotTyping }"
+          :readonly="isBotTyping"
         />
-        <button type="submit" class="btn send-message-button" title="Send message">
+        <button 
+          type="submit" 
+          title="Send message" 
+          class="btn send-message-button" 
+          :class="{ 'input-disabled': isBotTyping }">
           <i class="bi bi-send"></i>
         </button>
       </div>
@@ -22,6 +28,12 @@
         newMessage: '',
       };
     },
+    props: {
+        conversation: {
+            type: Array,
+            required: true,
+        },
+    },
     methods: {
       send() {
         if (this.newMessage.trim()) {
@@ -29,6 +41,15 @@
           this.newMessage = '';
         }
       }
+    },
+    computed: {
+        isBotTyping() {
+            if (this.conversation) {
+                return this.conversation.some(message => message.typing);
+            } else {
+                return false;
+            }
+        }
     }
   };
   </script>
@@ -71,5 +92,11 @@
   .send-message-button i {
     color: white;
     font-size: 20px;
+  }
+
+  .input-disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    filter: blur(1px);
   }
   </style>

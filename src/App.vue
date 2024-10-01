@@ -1,7 +1,7 @@
 <template>
   <div class="chat-wrapper">
     <MessageContainer :conversation="conversation" />
-    <MessageInput @sendMessage="sendMessage" />
+    <MessageInput :conversation="conversation" @sendMessage="sendMessage" />
   </div>
 </template>
 

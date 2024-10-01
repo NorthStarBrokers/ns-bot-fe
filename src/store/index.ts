@@ -87,32 +87,39 @@ export default createStore({
     async sendMessage({ state, commit, dispatch }, message) {
       // Add user's message to conversation
       commit('ADD_MESSAGE', { id: Date.now(), text: message, sender: 'user' });
+
+      // Show typing indicator
+      commit('ADD_MESSAGE', { id: 'typing-indicator', text: '', sender: 'bot', typing: true });
   
       // Validate the message based on the current step
       const validationResult = await dispatch('validateInput', { step: state.currentStep, message });
       
-      if (!validationResult.valid) {
-        // If validation fails, get the invalid response
-        const botResponse = state.botResponses[state.currentStep].invalid;
-        commit('ADD_MESSAGE', { id: Date.now(), text: botResponse, sender: 'bot' });
-        // The current step remains the same
-      } else {
-        // If validation succeeds, update the form field
-        commit('UPDATE_FORM_FIELD', { field: validationResult.field, value: message });
+      setTimeout(async () => {
+        // Remove typing indicator
+        const typingIndex = state.conversation.findIndex(m => m.id === 'typing-indicator');
+        if (typingIndex !== -1) state.conversation.splice(typingIndex, 1);
   
-        // Get the bot's valid response for the next step
-        const botResponse = state.botResponses[state.currentStep].valid;
-        commit('ADD_MESSAGE', { id: Date.now(), text: botResponse, sender: 'bot' });
+        if (!validationResult.valid) {
+          // If validation fails, get the invalid response
+          const botResponse = state.botResponses[state.currentStep].invalid;
+          commit('ADD_MESSAGE', { id: Date.now(), text: botResponse, sender: 'bot' });
+        } else {
+          // If validation succeeds, update the form field
+          commit('UPDATE_FORM_FIELD', { field: validationResult.field, value: message });
   
-        // Move to the next step
-        commit('INCREMENT_STEP');
-      }
-
-      // When the form reaches the last step, submit the form
-      if (state.currentStep === 10) {
-        console.log(state.applicantForm)
-        await axios.post("/api/chats/create-applicant", state.applicantForm);
-      }
+          // Get the bot's valid response for the next step
+          const botResponse = state.botResponses[state.currentStep].valid;
+          commit('ADD_MESSAGE', { id: Date.now(), text: botResponse, sender: 'bot' });
+  
+          // Move to the next step
+          commit('INCREMENT_STEP');
+        }
+  
+        // Submit the form when all steps are completed
+        if (state.currentStep === 10) {
+          await axios.post("/api/chats/create-applicant", state.applicantForm);
+        }
+      }, 1500); // Delay bot response by 1.5 seconds
     },
 
     validateInput({ state }, { step, message }) {
