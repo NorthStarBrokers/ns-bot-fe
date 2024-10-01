@@ -15,7 +15,7 @@
   <style scoped>
   .typing-indicator {
     display: flex;
-    gap: 6px;
+    gap: 10px;
     padding: 10px;
   }
   
