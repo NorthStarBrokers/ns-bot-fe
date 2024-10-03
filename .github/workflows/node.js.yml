@@ -48,7 +48,7 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
             cd $DEST_PATH
             npm install
-            pm2 delete falcon-frontend || true
+            
             pm2 start "npm run preivew" --name 'falcon-frontend'
           "
 
