@@ -46,7 +46,8 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
             cd $DEST_PATH
             npm install
-            pm2 restart falcon-frontend || pm2 serve dist 8081 --spa --name falcon-frontend
+            pm2 delete falcon-frontend || true  # Ensure it stops any running instance
+            pm2 start 'npm run preview' --name 'falcon-frontend' || pm2 serve dist 8081 --spa --name falcon-frontend
           "
 
           echo "Deploy completed."
