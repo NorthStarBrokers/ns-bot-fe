@@ -24,7 +24,7 @@
     height: 10px;
     border-radius: 50%;
     background-color: #28a745;
-    animation: bounce 1.2s infinite ease-in-out;
+    animation: bounce 0.6s infinite ease-in-out;
   }
   
   @keyframes bounce {
@@ -41,10 +41,10 @@
   }
   
   .dot:nth-child(2) {
-    animation-delay: 0.2s;
+    animation-delay: 0.1s;
   }
   
   .dot:nth-child(3) {
-    animation-delay: 0.4s;
+    animation-delay: 0.2s;
   }
   </style>

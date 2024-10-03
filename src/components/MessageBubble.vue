@@ -1,7 +1,10 @@
 <template>
-    <div :class="messageClass" class="message-wrapper">
+    <div v-if="message.text.length" :class="messageClass" class="message-wrapper">
       <p :class="bubbleClass" class="message-bubble">
-        {{ text }}
+        {{ message.text }}
+<!--         <p v-if="message.type == 'termsAndCondtions'" style="font-weight: 500;">
+          Please read the <a style="cursor: pointer;">terms</a>
+        </p> -->
       </p>
     </div>
   </template>
@@ -9,21 +12,17 @@
   <script>
   export default {
     props: {
-      sender: {
-        type: String,
-        required: true,
-      },
-      text: {
-        type: String,
+      message: {
+        type: Object,
         required: true,
       },
     },
     computed: {
       messageClass() {
-        return this.sender === 'bot' ? 'message-bot' : 'message-user';
+        return this.message.sender === 'bot' ? 'message-bot' : 'message-user';
       },
       bubbleClass() {
-        return this.sender === 'bot' ? 'message-bot-bubble' : 'message-user-bubble';
+        return this.message.sender === 'bot' ? 'message-bot-bubble' : 'message-user-bubble';
       }
     }
   };

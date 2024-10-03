@@ -3,8 +3,7 @@
         <MessageBubble
             v-for="(message, index) in conversation"
             :key="index"
-            :sender="message.sender"
-            :text="message.text"
+            :message="message"
         />
         <TypingIndicator v-if="isBotTyping" />
     </div>
@@ -45,7 +44,9 @@ export default {
     watch: {
         conversation: {
             handler() {
-                this.scrollToBottom();
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                })
             },
             deep: true,
         },  

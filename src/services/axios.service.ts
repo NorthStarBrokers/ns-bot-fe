@@ -5,13 +5,13 @@ axios.interceptors.request.use(
   (config) => {
     if (config.headers) {
       const headers = new AxiosHeaders();
-      headers.set('access-token', 'token12345');
       config.headers = headers;
     }
 
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-    config.baseURL = isLocal ? 'http://localhost:3000' : import.meta.env.VITE_API_URL;
+    // config.baseURL = isLocal ? 'http://localhost:3000' : import.meta.env.VITE_API_URL;
+    config.baseURL = import.meta.env.VITE_API_URL;
 
     // store.commit("notify/SET_LOADING_STATE", true);
     console.log(config)
