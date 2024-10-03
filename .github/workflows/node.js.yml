@@ -49,7 +49,7 @@ jobs:
             cd $DEST_PATH
             npm install
             pm2 delete falcon-frontend || true
-            pm2 start 'npm run preview' --name 'falcon-frontend'
+            pm2 start --name 'falcon-frontend'
           "
 
           echo "Deploy completed."
