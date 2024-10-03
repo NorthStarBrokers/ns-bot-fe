@@ -30,7 +30,8 @@ jobs:
         env:
           HOST: ${{ secrets.LIGHTSAIL_HOST }}
           USERNAME: ${{ secrets.LIGHTSAIL_USER }}
-          KEY: ${{ secrets.LIGHTSAIL_KEY }}
+          KEY: | 
+                  ${{ secrets.LIGHTSAIL_KEY }}
           DEST_PATH: ${{ secrets.LIGHTSAIL_PATH }}
         run: |
 
