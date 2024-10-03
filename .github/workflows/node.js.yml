@@ -53,7 +53,7 @@ jobs:
             cd $DEST_PATH
             npm install
             
-            pm2 start "npm run preview" --name 'falcon-frontend'
+            pm2 restart falcon-frontend || pm2 start "npm run preview" --name falcon-frontend
           "
 
           echo "Deploy completed."
