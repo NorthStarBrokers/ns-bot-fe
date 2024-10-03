@@ -18,7 +18,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.16.0'
+          node-version: '20.9.0'
 
       - name: Install dependencies
         run: npm install
@@ -37,6 +37,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${KEY}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          rm -r dist/
+          npm run build
 
           echo "Copying files..."
           scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv package.json package-lock.json $USERNAME@$HOST:$DEST_PATH/
@@ -46,8 +48,6 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
             cd $DEST_PATH
             npm install
-            rm -r dist/
-            npm run build
             pm2 delete falcon-frontend || true
             pm2 start 'npm run preview' --name 'falcon-frontend'
           "
