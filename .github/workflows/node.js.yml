@@ -30,13 +30,12 @@ jobs:
         env:
           HOST: ${{ secrets.LIGHTSAIL_HOST }}
           USERNAME: ${{ secrets.LIGHTSAIL_USER }}
-          KEY: | 
-                  ${{ secrets.LIGHTSAIL_KEY }}
+          KEY: ${{ secrets.LIGHTSAIL_KEY }}
           DEST_PATH: ${{ secrets.LIGHTSAIL_PATH }}
         run: |
 
           mkdir -p ~/.ssh
-          echo "${KEY}" > ~/.ssh/id_rsa
+          echo "${KEY}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
           echo "Copying files..."
