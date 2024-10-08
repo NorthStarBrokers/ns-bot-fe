@@ -31,9 +31,8 @@ const actions = {
         let createApplicationRes;
 
         try {
-          // commit("SET_APPLICATION_ID", createApplicationRes.data.id)
-          // createApplicationRes = await axios.post("/api/chats/create-applicant", state.applicantForm);
-          createApplicationRes = {
+          createApplicationRes = await axios.post("/api/chats/create-applicant", state.applicantForm);
+/*           createApplicationRes = {
             data: {
               "phone": "(000) 000 - 000",
               "city": "sdfgbdfgb",
@@ -52,7 +51,7 @@ const actions = {
               "leadId": 663,
               "leadKey": "b74bd41e-b052-4727-afbf-22964df5e027"
             }
-          }
+          } */
         } catch (e) {
           console.error(e)
         }
