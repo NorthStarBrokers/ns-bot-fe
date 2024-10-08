@@ -3,7 +3,7 @@ import termsContent from "./termsContent.js";
 import privacyContent from "./privacyContent.js";
 
 const state = {
-  conversation: [
+  chat: [
     { id: 1, text: "Welcome! I'm your application bot and I'll ask some details about you.", sender: 'bot' },
     { id: 2, text: "What is your first name?", sender: 'bot' },
   ],
@@ -60,7 +60,22 @@ const state = {
     6: {
       type: "province",
       valid: "Great! Which province are you in?",
-      invalid: "Please provide a valid city."
+      invalid: "Please provide a valid city.",
+      options: [
+        "Alberta",
+        "British Columbia",
+        "Manitoba",
+        "New Brunswick",
+        "Newfoundland and Labrador",
+        "Northwest Territories",
+        "Nova Scotia",
+        "Nunavut",
+        "Ontario",
+        "Prince Edward Island",
+        "Quebec",
+        "Saskatchewan",
+        "Yukon"
+      ]
     },
     7: {
       type: "postalCode",
@@ -69,20 +84,48 @@ const state = {
     },
     8: {
       type: "termsAndConditions",
-      valid: "Do you agree with the terms and conditions?",
-      invalid: "Please answer 'Yes' or 'No'."
+      valid: "Please read our Terms and Conditions and our Privacy Policy. Do you accept them?",
+      invalid: "Please answer 'Yes' or 'No'.",
+      options: ["Yes", "No"]
     },
     9: {
       type: "emailAsETransfer",
-      valid: "Finally, is your communications email the same as your e-transfer email? (Yes or No)",
-      invalid: "Please answer 'Yes' or 'No'."
+      valid: "Is your communications email the same as your e-transfer email?",
+      invalid: "Please answer 'Yes' or 'No'.",
+      options: ["Yes", "No"]
     },
     10: {
-      valid: "Thank you for completing the form!"
+      type: "loanamount",
+      valid: "How much would you like to borrow?",
+      invalid: "Please answer 'Yes' or 'No'.",
+      options: ["$300", "$500", "$700", "$1000", "$1500", "$2000", "$2500", "$3000"]
+    },
+    11: {
+      type: "emp_incometype",
+      valid: "What is your employment situation?",
+      invalid: "Please answer 'Yes' or 'No'.",
+      options: [
+        "Full time",
+        "Part time",
+        "Self employed",
+        "Retired",
+        "Disability",
+        "Social security",
+        "Unemployed"
+      ]
+    },
+    12: {
+      valid: "Loading Flinks..."
     }
   },
   termsContent: termsContent,
-  privacyContent: privacyContent
+  privacyContent: privacyContent,
+  applicationId: null,
+  flinksModalOpened: false,
+  leadId: null,
+  leadKey: null,
+  loginId: null,
+  accountId: null
 };
 
 export default state;

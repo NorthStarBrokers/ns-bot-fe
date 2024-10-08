@@ -1,13 +1,26 @@
 // @ts-nocheck
+// import { createStore, createLogger } from 'vuex'
+// import VuexPersistence from 'vuex-persist'
 import { createStore } from 'vuex';
-import state from './state';
-import getters from './getters';
-import actions from './actions';
-import mutations from './mutations';
+import chats from './chats'
+import brands from './brands'
 
-export default createStore({
-  state,
-  getters,
-  actions,
-  mutations
+/* const vuexPersist = new VuexPersistence({
+  storage: window.sessionStorage,
+  reducer: (state) => ({
+    bots: state.bots,
+    notify: state.notify
+  })
+})
+var plugins = [vuexPersist.plugin]
+if (debug){
+  var plugins = [createLogger(), vuexPersist.plugin]
+} */
+const store = createStore({
+  modules: {
+    chats,
+    brands,
+  },
 });
+
+export default store;

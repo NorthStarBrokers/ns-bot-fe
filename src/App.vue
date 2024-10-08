@@ -1,42 +1,103 @@
 <template>
   <div class="chat-wrapper">
-    <MessageContainer :conversation="conversation" />
-    <MessageInput :conversation="conversation" @sendMessage="sendMessage" />
+    <MessageContainer :chat="chat" @openModal="handleModal" @sendOptionAsMessage="sendMessage"/>
+    <MessageInput :chat="chat" @sendMessage="sendMessage" />
     <Modal v-if="showTermsModal" title="Terms and Conditions" :content="termsContent" @closemodal="showTermsModal = false" />
     <Modal v-if="showPrivacyModal" title="Privacy Policy" :content="privacyContent" @closemodal="showPrivacyModal = false" />
+    <FlinksModal v-if="showFlinksModal" title="Flinks" @closemodal="showFlinksModal = false" />
   </div>
 </template>
 
 <script>
+import FlinksModal from './components/flinks/FlinksModal.vue';
 import MessageContainer from './components/MessageContainer.vue';
 import MessageInput from './components/MessageInput.vue';
 import Modal from "./components/Modal.vue";
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import { brandList } from './core/helper/brand-list';
 
 export default {
   components: {
     MessageContainer,
     MessageInput,
-    Modal
+    Modal,
+    FlinksModal
   },
   data: function() {
     return {
       showTermsModal: false,
       showPrivacyModal: false,
+      showFlinksModal: false
     }
   },
   computed: {
-    ...mapGetters(['conversation', 'termsContent', 'privacyContent']),
+    ...mapState({
+      flinksModalOpened: state => state.chats.flinksModalOpened,
+      leadId: state => state.chats.leadId,
+      leadKey: state => state.chats.leadKey,
+      loginId: state => state.chats.loginId,
+      accountId: state => state.chats.accountId,
+    }),
+    ...mapGetters({
+      chat: 'chats/chat',
+      termsContent: 'chats/termsContent', 
+      privacyContent: 'chats/privacyContent'
+    }),
+  },
+  mounted() {
+    this.setBrand(brandList[2])
+  },  
+  mounted() {
+    window.addEventListener('message', this.handleFlinks);
+  },
+  beforeDestroy() {
+    window.removeEventListener('message', this.handleFlinks);
   },
   methods: {
-    ...mapActions(['sendMessage']),
+    ...mapActions({
+      sendMessage: 'chats/sendMessage',
+      setBrand: 'brands/setBrand',
+      setLoginId: 'chats/setLoginId',
+      setAccountId: 'chats/setAccountId',
+      updateLead: "chats/updateLead"
+    }),
+    handleFlinks(e) {
+      if (e.data.step == 'REDIRECT') {
+        this.setLoginId(e.data.loginId);
+        this.setAccountId(e.data.accountId);
+
+        this.updateLead({
+          leadid: this.leadId,
+          tag: this.leadKey,
+          loginid: this.loginId,
+          accountid: this.accountId,
+        })
+      }
+    },
+    handleModal(modalType) {
+      if (modalType === 'terms') {
+        this.openTermsModal();
+      } else if (modalType === 'privacy') {
+        this.openPrivacyModal();
+      }
+    },
     openTermsModal() {
       this.showTermsModal = true;
     },
     openPrivacyModal() {
       this.showPrivacyModal = true;
     },
-  }
+    openFlinksModal() {
+      this.showFlinksModal = true;
+    },
+  },
+  watch: {
+    flinksModalOpened(opened) {
+      if (opened) {
+        this.openFlinksModal();
+      }
+    }
+  },
 };
 </script>
 

@@ -3,55 +3,32 @@
         <div class="modal-container" @click.stop>
             <div class="modal-header">
                 <h1>{{ title }}</h1>
-                <button 
-                    type="button" 
-                    class="close text-white" 
-                    @click="$emit('closemodal')" 
-                    :class="{ 'input-disabled': !isRead }"
-                    :disabled='!isRead'
-                >
-                    &times;
-                </button>
+                <button type="button" class="close text-white" @click="$emit('closemodal')">&times;</button>
             </div>
-            <div class="modal-body" ref="modalBody" @scroll="checkScroll">
-                <div v-for="(p, index) in content" :key="index">
-                    <p class="p-content">{{ p }}</p>
-                </div>
-                <img v-if="image" class="img-fluid" :src="image">
+            <div class="modal-body" ref="modalBody">
+                <Flinks />
             </div>
             <div class="modal-footer">
-                <button 
-                    class="button" 
-                    :class="{ 'input-disabled': !isRead }"
-                    @click="$emit('closemodal')"
-                    :disabled='!isRead'
-                >
-                    Back to Application
-                </button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import Flinks from './Flinks.vue';
+
 export default {
-    props: ["modal", "title", "image", "content"],
+    components: { Flinks },
+    props: ["modal", "title"],
     emits: ["closemodal"],
     data() {
         return {
-            isRead: false,
         };
     },
     mounted() {
-
     },
     methods: {
-        checkScroll() {
-            const modalBody = this.$refs.modalBody;
-            if (modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight) {
-                this.isRead = true; 
-            }
-        },
+       
     },
 };
 </script>

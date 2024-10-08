@@ -49,7 +49,7 @@ const validateName = (input, field) => {
     if (normalizedInput === 'yes' || normalizedInput === 'no') {
       return { valid: true, field: field, value: normalizedInput === 'yes' ? true : false };
     }
-    return { valid: false, error: 'Please answer "Yes" or "No".', field: 'emailAsTransfer' };
+    return { valid: false, error: 'Please answer "Yes" or "No".', field: field };
   };
   
   const validateInput = (step, message) => {
@@ -73,9 +73,9 @@ const validateName = (input, field) => {
       case 8:
         return validatePostalCode(message);
       case 9:
-        return validateYesNo(message, 'emailAsETransfer');
-      case 10:
         return validateYesNo(message, 'termsAndConditions');
+      case 10:
+        return validateYesNo(message, 'emailAsETransfer');
       default:
         return { valid: true };
     }

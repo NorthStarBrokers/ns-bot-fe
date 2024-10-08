@@ -1,9 +1,11 @@
 <template>
     <div class="message-container" ref="messageContainer">
         <MessageBubble
-            v-for="(message, index) in conversation"
+            v-for="(message, index) in chat"
             :key="index"
             :message="message"
+            @openModal="$emit('openModal', $event)"
+            @sendOptionAsMessage="$emit('sendOptionAsMessage', $event)"
         />
         <TypingIndicator v-if="isBotTyping" />
     </div>
@@ -18,16 +20,17 @@ export default {
         MessageBubble,
         TypingIndicator
     },
+    emits: ["openModal", "sendOptionAsMessage"],
     props: {
-        conversation: {
+        chat: {
             type: Array,
             required: true,
         },
     },
     computed: {
         isBotTyping() {
-            if (this.conversation) {
-                return this.conversation.some(message => message.typing);
+            if (this.chat) {
+                return this.chat.some(message => message.typing);
             } else {
                 return false;
             }
@@ -42,7 +45,7 @@ export default {
         }
     },
     watch: {
-        conversation: {
+        chat: {
             handler() {
                 this.$nextTick(() => {
                     this.scrollToBottom();
