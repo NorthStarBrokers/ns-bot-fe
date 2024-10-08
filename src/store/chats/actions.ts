@@ -68,7 +68,7 @@ const actions = {
     }, 1500);
   },
 
-  updateLead({ state, commit, dispatch }, updateLeadObj) {
+  async updateLead({ state, commit, dispatch }, updateLeadObj) {
     await axios.post("/api/lead/update-lead", updateLeadObj);
   },
 
