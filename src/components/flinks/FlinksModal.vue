@@ -1,10 +1,6 @@
 <template>
-    <div class="modal-bg" @click="$emit('closemodal')">
+    <div class="modal-bg">
         <div class="modal-container" @click.stop>
-            <div class="modal-header">
-                <h1>{{ title }}</h1>
-                <button type="button" class="close text-white" @click="$emit('closemodal')">&times;</button>
-            </div>
             <div class="modal-body" ref="modalBody">
                 <Flinks />
             </div>
@@ -21,15 +17,6 @@ export default {
     components: { Flinks },
     props: ["modal", "title"],
     emits: ["closemodal"],
-    data() {
-        return {
-        };
-    },
-    mounted() {
-    },
-    methods: {
-       
-    },
 };
 </script>
 
@@ -97,7 +84,6 @@ export default {
 }
 
 .modal-body {
-    overflow-y: scroll;
     text-align: start;
     flex-grow: 1;
     margin-bottom: 16px;
@@ -132,7 +118,6 @@ export default {
     cursor: pointer;
     color: white;
 }
-
 
 .input-disabled {
     opacity: 0.7;

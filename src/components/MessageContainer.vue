@@ -7,18 +7,18 @@
             @openModal="$emit('openModal', $event)"
             @sendOptionAsMessage="$emit('sendOptionAsMessage', $event)"
         />
-        <TypingIndicator v-if="isBotTyping" />
+        <Loading v-if="isBotTyping" />
     </div>
 </template>
 
 <script>
 import MessageBubble from './MessageBubble.vue';
-import TypingIndicator from './TypingIndicator.vue';
+import Loading from './Loading.vue';
 
 export default {
     components: {
         MessageBubble,
-        TypingIndicator
+        Loading
     },
     emits: ["openModal", "sendOptionAsMessage"],
     props: {

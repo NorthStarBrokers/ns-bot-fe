@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-bg" @click="$emit('closemodal')">
+    <div class="modal-bg">
         <div class="modal-container" @click.stop>
             <div class="modal-header">
                 <h1>{{ title }}</h1>

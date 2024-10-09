@@ -1,19 +1,25 @@
 <template>
-    <div class="typing-indicator">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'TypingIndicator',
-  };
-  </script>
+  <div class="loading" :style="customStyles">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Loading',
+  props: {
+    customStyles: {
+      type: String,
+      default: ''
+    }
+  }
+};
+</script>
   
   <style scoped>
-  .typing-indicator {
+  .loading {
     display: flex;
     gap: 10px;
     padding: 10px;

@@ -1,7 +1,7 @@
 <template>
   <div class="flinks-container" id="form-flinks">
     <errorContainer v-if="errorController"></errorContainer>
-    <loadingComponent v-if="loading"></loadingComponent>
+    <Loading v-if="loading" :customStyles="'scale: 2; padding: 100px;'"></Loading>
     <div v-show="!loading && !errorController && funding === 'on'" ref="flinksConnectRef"></div>
     <div v-if="!loading && !errorController && funding === 'off'">
       <h2 v-if="!loading && !errorController" class="primary-color-dark">{{ $t('not-funding.title') }}</h2>
@@ -12,7 +12,6 @@
 
 <script>
 import './Flinks.scss'
-import loadingComponent from './LoadingSpinner.vue'
 import errorContainer from './error-container.vue'
 import { jerryAPI, mapFormToBody } from '../../services/jerry-service'
 import { fundLead } from '../../services/split-service'
@@ -22,12 +21,13 @@ import { appHubUrlParams } from '../../core/helper/mappers'
 import { routing } from '../../core/helper/route-list'
 import { host, Environment } from '../../core/config/environment/host'
 import { mapActions, mapState } from 'vuex'
+import Loading from '../Loading.vue'
 
 export default {
   name: 'FlinksComponent',
   components: {
-    loadingComponent,
-    errorContainer
+    errorContainer,
+    Loading
   },
   data() {
     return {
@@ -39,8 +39,6 @@ export default {
       errorController: false,
       iframe: null,
       loading: true,
-      loginId: null,
-      accountId: null,
     }
   },
   computed: {
