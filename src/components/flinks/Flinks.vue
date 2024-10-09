@@ -56,25 +56,8 @@ export default {
       return 'en'
     }
   },
-  mounted() {
-    window.addEventListener('message', this.handleFlinks);
-  },
-  beforeDestroy() {
-    window.removeEventListener('message', this.handleFlinks);
-  },
   methods: {
     ...mapActions(['getBrand']),
-    handleFlinks(e) {
-      console.log(e.data);
-
-      if (e.data.loginId) {
-        this.loginId = e.data.loginId;
-      }
-
-      if (e.data.accountId) {
-        this.accountId = e.data.accountId;
-      }
-    },
     generateIframeUrl() {
       if (host.environment === Environment.production) {
         this.url = `https://${this.brand.flinks}-iframe.private.fin.ag/v2/`;
@@ -119,6 +102,7 @@ export default {
       console.log(baseUrl);
       const searchParams = new URLSearchParams();
       console.log(searchParams);
+      console.log(this.$store.state)
       if (this.leadId) {
         searchParams.append('leadid', this.leadId.toString());
       }
