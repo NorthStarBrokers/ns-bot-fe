@@ -1,11 +1,16 @@
 <template>
-    <form id="message-form" @submit.prevent="send">
-      <div class="input-group send-message-group">
+  <form id="message-form" @submit.prevent="send">
+    <div class="input-group">
+      <div v-if="messageToEdit" class="input-group-message-to-edit">
+        <p class="edited-message">Edit Message:</p>
+        <p class="edited-message">{{ messageToEdit.text }}</p>
+      </div>
+      <div class="input-group-write-message">
         <input
           type="text"
           v-model="newMessage"
           ref="newMessageInput"
-          placeholder="Write a message..."
+          placeholder="Type here"
           class="input-message"
           :class="{ 'input-disabled': isBotTyping || hasOptions || isDatePicker }"
           :readonly="isBotTyping"
@@ -21,10 +26,13 @@
           </svg>
         </button>
       </div>
-    </form>
-  </template>
+      </div>
+  </form>
+</template>
   
-  <script>
+<script>
+import { mapState } from 'vuex';
+
   export default {
     data() {
       return {
@@ -39,13 +47,21 @@
     },
     methods: {
       send() {
+        if (this.messageToEdit && this.newMessage.trim()) {
+          this.$emit('editMessage', { id: this.messageToEdit.id, text: this.newMessage });
+          this.$emit('editMessageStart', null);
+          this.newMessage = '';
+        }
         if (this.newMessage.trim()) {
           this.$emit('sendMessage', this.newMessage);
           this.newMessage = '';
         }
-      }
+      },
     },
     computed: {
+      ...mapState({
+        messageToEdit: state => state.chats.messageToEdit,
+      }),
       isBotTyping() {
         if (this.chat) {
           return this.chat.some(message => message.typing);
@@ -73,50 +89,70 @@
   };
   </script>
   
-  <style scoped>
-  .input-group {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    margin-top: 10px;
-    background-color: #1a2822;
-    border-radius: 10px;
-  }
-  
-  .input-message {
-    flex: 1;
-    border-radius: 20px;
-    border: none;
-    padding: 15px;
-    font-size: 16px;
-    color: white;
-    background-color: #16221f;
-    margin-right: 20px;
-  }
-  
-  .send-message-button {
-    background-color: #28a745;
-    border: none;
-    border-radius: 50%;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  
-  .send-message-button:hover {
-    background-color: #218838;
-  }
-  
-  .send-message-button i {
-    color: white;
-    font-size: 20px;
-  }
+<style scoped>
+.input-group {
 
-  .input-disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    filter: blur(1px);
-  }
-  </style>
+}
+
+.input-group-message-to-edit {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #28a745; /* Change this color as needed */
+  border-radius: 10px;
+}
+
+.input-group-write-message {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  margin-top: 10px;
+  background-color: #1a2822;
+  border-radius: 10px;
+}
+
+.input-message {
+  flex: 1;
+  border-radius: 20px;
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  color: white;
+  background-color: #16221f;
+  margin-right: 20px;
+}
+
+.send-message-button {
+  background-color: #28a745;
+  border: none;
+  border-radius: 50%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.send-message-button:hover {
+  background-color: #218838;
+}
+
+.send-message-button i {
+  color: white;
+  font-size: 20px;
+}
+
+.input-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  filter: blur(1px);
+}
+
+.edited-message-container {
+
+}
+
+.edited-message {
+  color: white; /* Change this as needed */
+  font-weight: bold;
+}
+</style>

@@ -3,6 +3,13 @@ const mutations = {
     ADD_MESSAGE(state, message) {
       state.chat.push(message);
     },
+    EDIT_MESSAGE(state, newMessage) {
+      const messageIndex = state.chat.findIndex(existingMessage => existingMessage.id == newMessage.id);
+  
+      if (messageIndex !== -1) {
+        state.chat[messageIndex].text = newMessage.text;
+      }
+    },
     UPDATE_FORM_FIELD(state, { field, value }) {
       state.applicantForm[field] = value.toLowerCase() == 'yes' ? true : value.toLowerCase() == 'no' ? false : value;
     },
@@ -29,6 +36,9 @@ const mutations = {
     },
     SET_ACCOUNT_ID(state, accountId) {
       state.accountId = accountId
+    },
+    SET_MESSAGE_TO_EDIT(state, message) {
+      state.messageToEdit = message
     }
   };
   

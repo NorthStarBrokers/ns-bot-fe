@@ -1,7 +1,7 @@
 <template>
   <div class="chat-wrapper">
-    <MessageContainer :chat="chat" @openModal="handleModal" @sendOptionAsMessage="sendMessage"/>
-    <MessageInput :chat="chat" @sendMessage="sendMessage" />
+    <MessageContainer :chat="chat" @openModal="handleModal" @sendOptionAsMessage="sendMessage" @editMessageStart="editMessageStart" />
+    <MessageInput :chat="chat" @sendMessage="sendMessage" @editMessage="editMessage" @editMessageStart="editMessageStart" />
     <Modal v-if="showTermsModal" title="Terms and Conditions" :content="termsContent" @closemodal="showTermsModal = false" />
     <Modal v-if="showPrivacyModal" title="Privacy Policy" :content="privacyContent" @closemodal="showPrivacyModal = false" />
     <FlinksModal v-if="showFlinksModal" title="Flinks" @closemodal="showFlinksModal = false" />
@@ -56,6 +56,8 @@ export default {
   methods: {
     ...mapActions({
       sendMessage: 'chats/sendMessage',
+      editMessageStart: 'chats/editMessageStart',
+      editMessage: 'chats/editMessage',
       setBrand: 'brands/setBrand',
       setLoginId: 'chats/setLoginId',
       setAccountId: 'chats/setAccountId',

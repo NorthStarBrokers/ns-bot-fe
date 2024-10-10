@@ -46,7 +46,7 @@ export default {
     width: 100%;
     max-width: 563.5px;
     height: 100%;
-    max-height: 800px;
+    max-height: 720px;
 }
 
 @media (max-width: 1366px) {
@@ -94,7 +94,6 @@ export default {
     -ms-user-select: none;
     user-select: none;
     scrollbar-color: #DEE2E6 transparent;
-    padding-right: 5px;
 }
 
 .p-content {

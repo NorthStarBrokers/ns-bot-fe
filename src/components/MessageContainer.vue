@@ -6,6 +6,7 @@
             :message="message"
             @openModal="$emit('openModal', $event)"
             @sendOptionAsMessage="$emit('sendOptionAsMessage', $event)"
+            @editMessageStart="$emit('editMessageStart', $event)"
         />
         <Loading v-if="isBotTyping" />
     </div>
@@ -20,7 +21,7 @@ export default {
         MessageBubble,
         Loading
     },
-    emits: ["openModal", "sendOptionAsMessage"],
+    emits: ["openModal", "sendOptionAsMessage", "editMessageStart"],
     props: {
         chat: {
             type: Array,

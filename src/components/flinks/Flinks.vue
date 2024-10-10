@@ -1,7 +1,7 @@
 <template>
   <div class="flinks-container" id="form-flinks">
     <errorContainer v-if="errorController"></errorContainer>
-    <Loading v-if="loading" :customStyles="'scale: 2; padding: 100px;'"></Loading>
+    <Loading v-if="!loading" :customStyles="'scale: 2; padding: 100px; flex-basis: fit-content'"></Loading>
     <div v-show="!loading && !errorController && funding === 'on'" ref="flinksConnectRef"></div>
     <div v-if="!loading && !errorController && funding === 'off'">
       <h2 v-if="!loading && !errorController" class="primary-color-dark">{{ $t('not-funding.title') }}</h2>
