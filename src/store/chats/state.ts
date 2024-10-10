@@ -34,7 +34,7 @@ const state = {
     },
     1: {
       type: "dob",
-      valid: "Thanks! What's your date of birth? (YYYY-MM-DD)",
+      valid: "Thanks! Please select your date of birth:",
       invalid: "Please provide a valid last name."
     },
     2: {
