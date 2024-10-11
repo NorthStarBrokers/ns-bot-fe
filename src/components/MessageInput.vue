@@ -27,7 +27,7 @@
           placeholder="Type here"
           class="input-message"
           :class="{ 'input-disabled': isBotTyping || hasOptions || isDatePicker, 'top-borders-without-edit': !messageToEdit }"
-          :readonly="isBotTyping"
+          :readonly="isBotTyping || hasOptions || isDatePicker"
         />
         <a 
           type="submit" 
@@ -76,7 +76,6 @@ import { mapState } from 'vuex';
       send() {
         if (this.messageToEdit && this.newMessage.trim()) {
           this.$emit('editMessage', { id: this.messageToEdit.id, text: this.newMessage });
-          this.$emit('editMessageStart', null);
           this.newMessage = '';
         }
         if (this.newMessage.trim()) {

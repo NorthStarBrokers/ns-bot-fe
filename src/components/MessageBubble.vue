@@ -82,7 +82,6 @@ export default {
     handleSelectOption(option) {  
       if (this.isEditing) {
         this.$emit('editOption', {id: this.messageToEdit.id, text: option})
-        this.$emit('editMessageStart', null);
       } else {
         this.$emit('sendOptionAsMessage', option)
       }
