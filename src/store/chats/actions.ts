@@ -74,9 +74,9 @@ const actions = {
   async editMessage({ state, commit, dispatch }, message) {
     commit('EDIT_MESSAGE', { id: message.id, text: message.text });
 
-    const validationResult = await dispatch('validateInput', { step: message.step, text: message.text });
+    /* const validationResult = await dispatch('validateInput', { step: message.step, text: message.text });
 
-    /* if (validationResult.valid) {
+     if (validationResult.valid) {
       commit('UPDATE_FORM_FIELD', { field: validationResult.field, value: message });  
       commit('SET_MESSAGE_TO_EDIT', null)
     } */

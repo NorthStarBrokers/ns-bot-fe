@@ -14,18 +14,18 @@
         </p>
       </div>
     </div>
-    <h4 v-if="message.options" class="options-header">Select an option:</h4>
-    <div v-if="message.options" class="options-container">
+    <h4 v-if="message.options && (isLastMessage || isEditing)" class="options-header">Select an option:</h4>
+    <div v-if="message.options && (isLastMessage || isEditing)" class="options-container">
       <button 
         v-for="(option, index) in message.options"
         class="option-button"
-        @click="$emit('sendOptionAsMessage', option)"
+        @click="handleSelectOption(option)"
         :key="index"
       >
         {{ option }}
       </button>       
     </div>
-    <div v-if="message.type == 'dob'" style="padding-top: 10px;">
+    <div v-if="message.type == 'dob' && (isLastMessage || isEditing)" style="padding-top: 10px;">
       <VueDatePicker 
         v-model="date" 
         inline 
@@ -42,6 +42,7 @@
 <script>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { mapState } from 'vuex';
 
 export default {
   components: {
@@ -53,28 +54,46 @@ export default {
       required: true,
     },
   },
-  emits: ["openModal", "sendOptionAsMessage", 'editMessageStart'],
+  emits: ["openModal", "sendOptionAsMessage", 'editMessageStart', 'editOption'],
   data: function () {
     return {
       date: null
     }
   },
   computed: {
+    ...mapState({
+      chat: state => state.chats.chat,
+      messageToEdit: state => state.chats.messageToEdit
+    }),
     messageClass() {
       return this.message.sender === 'bot' ? 'message-bot' : 'message-user';
     },
     bubbleClass() {
       return this.message.sender === 'bot' ? 'message-bot-bubble' : 'message-user-bubble';
+    },
+    isLastMessage() {
+      return this.message.id == this.chat[this.chat.length - 1].id;
+    },
+    isEditing() {
+      return this.messageToEdit != null;
     }
   },
   methods: {
+    handleSelectOption(option) {  
+      if (this.isEditing) {
+        this.$emit('editOption', {id: this.messageToEdit.id, text: option})
+        this.$emit('editMessageStart', null);
+      } else {
+        this.$emit('sendOptionAsMessage', option)
+      }
+    },
     formatDateAndEmit(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0'); 
       const day = String(date.getDate()).padStart(2, '0');
       const formattedDate = `${year}-${month}-${day}`;
-
-      this.$emit('sendOptionAsMessage', formattedDate)
+      
+      this.handleSelectOption(formattedDate)
     }
   }
 };

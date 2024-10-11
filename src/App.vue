@@ -1,6 +1,6 @@
 <template>
   <div class="chat-wrapper">
-    <MessageContainer :chat="chat" @openModal="handleModal" @sendOptionAsMessage="sendMessage" @editMessageStart="editMessageStart" />
+    <MessageContainer :chat="chat" @openModal="handleModal" @sendOptionAsMessage="sendMessage" @editMessageStart="editMessageStart" @editOption="editMessage" />
     <MessageInput :chat="chat" @sendMessage="sendMessage" @editMessage="editMessage" @editMessageStart="editMessageStart" />
     <Modal v-if="showTermsModal" title="Terms and Conditions" :content="termsContent" @closemodal="showTermsModal = false" />
     <Modal v-if="showPrivacyModal" title="Privacy Policy" :content="privacyContent" @closemodal="showPrivacyModal = false" />
